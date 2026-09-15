@@ -1,6 +1,7 @@
 #ifndef UNIQUE_PTR_H
 #define UNIQUE_PTR_H
 
+#include <utility>
 // Your implementation here
 
 template <typename T> class UniquePtr 
@@ -25,14 +26,14 @@ public:
     // Move assignment
     UniquePtr& operator=(UniquePtr&& other){
         if (this != &other){
-            reset(other.release())
+            reset(other.release());
         }
         return *this;
     };
 
     // Converting move constructor
     template <typename U>
-    UniquePtr(UniquePtr<U>&& other) : uPtr(other.release());
+    UniquePtr(UniquePtr<U>&& other) : uPtr(other.release()) {}
 
     // Destructor
     ~UniquePtr() {
@@ -50,7 +51,7 @@ public:
     T* release(){
         T *tempPtr = uPtr;
         uPtr = nullptr;
-        return tempPtr
+        return tempPtr;
     };
 
     void reset(T* newPtr = nullptr){
@@ -65,12 +66,19 @@ public:
         other.uPtr = temp;
     };
 
-    explicit operator bool() const {
+    operator bool() const {
         return uPtr != nullptr;
     }
 
 private:
     T* uPtr;
 };
+
+template <typename T, typename... Args>
+UniquePtr<T> makeUnique(Args&&... args)
+{
+    T *ptr = new T(std::forward<Args>(args)...);
+    return UniquePtr<T>(ptr);
+}
 
 #endif
