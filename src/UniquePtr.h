@@ -41,7 +41,9 @@ public:
     }
 
     T& operator*() const { return *uPtr; }
+
     T* operator->() const { return uPtr; }
+
     T* get() const { return uPtr; }
 
     bool operator==(const UniquePtr<T>& other) const {
